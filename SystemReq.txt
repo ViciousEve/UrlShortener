@@ -1,0 +1,1 @@
+.net modular monolith app about url shortener: main functionality is the url shortening service and qr generator. For unauthorized, shortening or can only live for 15m, user can register and login for 30/60/180m urls ttl, view stats about their links clicked. Use cache for fast fetching, postgres for persitence
