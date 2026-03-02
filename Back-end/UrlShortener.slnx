@@ -1,1 +1,5 @@
-<Solution />
+<Solution>
+  <Project Path="src/App/App.csproj" />
+  <Project Path="src/Modules/Shortening/Shortening.csproj" />
+  <Project Path="src/UrlShortener.API/UrlShortener.API.csproj" />
+</Solution>
