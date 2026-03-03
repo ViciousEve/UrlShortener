@@ -11,10 +11,8 @@ namespace Shortening.Domain
         {
             if (string.IsNullOrEmpty(value))
                 throw new ArgumentException("Short code cannot be empty", nameof(value));
-            if (value.Length > 10)
-                throw new ArgumentException("Short code cannot be longer than 10 characters", nameof(value));
-            if (value.Length < 5)
-                throw new ArgumentException("Short code cannot be shorter than 5 characters", nameof(value));
+            if(Value.Length != 8)
+                throw new ArgumentException("Short code must be 8 characters long.");
             if (!Regex.IsMatch(value, "^[a-zA-Z0-9]+$"))
             throw new ArgumentException("Short code contains invalid characters.");
             

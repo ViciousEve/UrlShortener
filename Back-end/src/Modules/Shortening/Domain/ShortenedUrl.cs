@@ -6,13 +6,13 @@ namespace Shortening.Domain
 {
     public class ShortenedUrl : Entity
     {
-        public Guid Id { get; }
-        public string OriginalUrl { get; }
-        public ShortCode ShortCode { get; }
+        public Guid Id { get; private set; }
+        public string OriginalUrl { get; private set; }
+        public ShortCode ShortCode { get; private set; }
         public UrlStatus Status { get; private set; }
-        public DateTime CreatedAt { get; }
-        public DateTime ExpiresAt { get; }
-        public Guid? UserId { get; } // Null for anonymous users
+        public DateTime CreatedAt { get; private set; }
+        public DateTime ExpiresAt { get; private set; }
+        public Guid? UserId { get; private set; } // Null for anonymous users
 
         public ShortenedUrl(string originalUrl, ShortCode shortCode,
                             DateTime expiresAt, Guid? userId)
