@@ -14,6 +14,7 @@ namespace Shortening.Domain
         public DateTime ExpiresAt { get; private set; }
         public Guid? UserId { get; private set; } // Null for anonymous users
 
+        private ShortenedUrl() { } //Private paramaterles constructor for EF code
         public ShortenedUrl(string originalUrl, ShortCode shortCode,
                             DateTime expiresAt, Guid? userId)
         {
