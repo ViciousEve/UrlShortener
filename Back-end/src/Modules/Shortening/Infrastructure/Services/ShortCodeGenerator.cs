@@ -4,12 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Shortening.Application.Contracts;
+using Shortening.Domain;
 
 namespace Shortening.Infrastructure.Services
 {
     public class ShortCodeGenerator : IShortCodeGenerator
     {
-        private const int MAX_CODE_LENGTH = 8;
+        private const int MAX_CODE_LENGTH = ShortCode.RequiredLength;
         public string GenerateShortCode()
         {           
             // Generate a random short code using a combination of characters and numbers

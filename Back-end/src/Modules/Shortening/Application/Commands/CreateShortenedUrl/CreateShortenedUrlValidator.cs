@@ -1,10 +1,11 @@
 using FluentValidation;
+using Shortening.Domain;
 
 namespace Shortening.Application.Commands.CreateShortenedUrl
 {
     public class CreateShortenedUrlValidator : AbstractValidator<CreateShortenedUrlCommand>
     {
-        private static readonly int[] AllowedTtlMinutes = { 15, 30, 60, 180 };
+        private static readonly int[] AllowedTtlMinutes = ShortenedUrl.AllowedTtlInMinutes.ToArray();
         public CreateShortenedUrlValidator()
         {
             RuleFor(x => x.OriginalUrl)

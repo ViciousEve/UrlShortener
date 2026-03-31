@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using App.Abstractions;
 using Shortening.Domain.Events;
 
@@ -13,6 +13,8 @@ namespace Shortening.Domain
         public DateTime CreatedAt { get; private set; }
         public DateTime ExpiresAt { get; private set; }
         public Guid? UserId { get; private set; } // Null for anonymous users
+
+        public static readonly IReadOnlyCollection<int> AllowedTtlInMinutes = new[] { 15, 30, 60, 180 };
 
         private ShortenedUrl() { } //Private paramaterles constructor for EF code
         public ShortenedUrl(string originalUrl, ShortCode shortCode,
