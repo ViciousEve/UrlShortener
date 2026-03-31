@@ -43,17 +43,19 @@ namespace Shortening.Application.Queries.ResolveShortCode
                 throw new Exception("Shortened URL is disabled");
             }
 
-            //Publish an event for analytics
-            var clickedEvent = new UrlClickedIntegrationEvent(
-                Guid.NewGuid(),
-                DateTime.UtcNow,
-                shortenedUrl.Id,
-                shortenedUrl.ShortCode.Value,
-                shortenedUrl.OriginalUrl,
-                shortenedUrl.UserId
-            );
+            //Publish an event for analytics if user is not anonymous
+            if(shortenedUrl.UserId != null) 
+            {
+                var clickedEvent = new UrlClickedIntegrationEvent(
+                    shortenedUrl.Id,
+                    shortenedUrl.ShortCode.Value,
+                    shortenedUrl.OriginalUrl,
+                    shortenedUrl.UserId
+                );
 
-            await _publisher.Publish(clickedEvent, cancellationToken);
+                await _publisher.Publish(clickedEvent, cancellationToken);
+            }
+            
 
             return shortenedUrl.OriginalUrl;
         }

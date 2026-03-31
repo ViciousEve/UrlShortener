@@ -1,6 +1,6 @@
 using Shortening.Application.Contracts;
 using Microsoft.Extensions.Hosting;
-
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Shortening.Infrastructure.Services
 {
@@ -13,9 +13,23 @@ namespace Shortening.Infrastructure.Services
             _serviceProvider = serviceProvider;
         }
 
-        protected override Task ExecuteAsync(CancellationToken stoppingToken)
+        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            return Task.CompletedTask;
+            while(!stoppingToken.IsCancellationRequested)
+            {
+                using(var scope = _serviceProvider.CreateScope())
+                {
+                    var _repository = scope.ServiceProvider.GetRequiredService<IShortenedUrlRepository>();
+
+                    var expiredUrls = await _repository.GetExpiredUrlsAsync();
+                    foreach (var url in expiredUrls)
+                    {
+                        url.Expire();
+                    }
+                    await _repository.SaveChangesAsync();
+                }
+                await Task.Delay(TimeSpan.FromMinutes(15), stoppingToken);
+            }
         }
     }
-}
+}
