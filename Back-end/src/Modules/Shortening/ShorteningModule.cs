@@ -24,7 +24,11 @@ namespace Shortening
             services.AddScoped<IShortenedUrlRepository, ShortenedUrlRepository>();
             services.AddSingleton<IShortCodeGenerator, ShortCodeGenerator>();
             //MediatR
-            services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(typeof(ShorteningModule).Assembly));
+            services.AddMediatR(cfg => {
+                cfg.RegisterServicesFromAssemblies(typeof(ShorteningModule).Assembly);
+                cfg.AddOpenBehavior(typeof(ValidationBehavior<,>));
+
+                });
             //FluentValidation
             services.AddValidatorsFromAssembly(typeof(ShorteningModule).Assembly);
 
