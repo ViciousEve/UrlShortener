@@ -12,10 +12,10 @@ namespace Shortening.Application.IntegrationEvents
         public string OriginalUrl { get; }
         public Guid? UserId { get; }
 
-        public UrlClickedIntegrationEvent(Guid id, DateTime occurredOnUtc, Guid shortenedUrlId, string shortCode, string originalUrl, Guid? userId)
+        public UrlClickedIntegrationEvent(Guid shortenedUrlId, string shortCode, string originalUrl, Guid? userId)
         {
-            Id = id;
-            OccurredOnUtc = occurredOnUtc;
+            Id = Guid.NewGuid();
+            OccurredOnUtc = DateTime.UtcNow;
             ShortenedUrlId = shortenedUrlId;
             ShortCode = shortCode;
             OriginalUrl = originalUrl;
