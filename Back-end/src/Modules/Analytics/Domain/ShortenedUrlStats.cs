@@ -8,6 +8,12 @@ namespace Analytics.Domain
         public string ShortCode { get; private set; }
         public string OriginalUrl { get; private set; }
         public Guid? UserId { get; private set; }
+        public int TotalClicks { get; private set; }
+        public DateTime? LastClickedAtUtc { get; private set; }
+
+        // Navigation property for EF Core
+        private readonly List<ClickEvent> _clickEvents = new();
+        public IReadOnlyCollection<ClickEvent> ClickEvents => _clickEvents.AsReadOnly();
 
         private ShortenedUrlStats() { } // Private parameterless constructor for EF Core
 
@@ -22,6 +28,14 @@ namespace Analytics.Domain
             ShortCode = shortCode;
             OriginalUrl = originalUrl;
             UserId = userId;
+            TotalClicks = 0;
+            LastClickedAtUtc = null;
+        }
+
+        public void RecordClick()
+        {
+            TotalClicks++;
+            LastClickedAtUtc = DateTime.UtcNow;
         }
     }
 }

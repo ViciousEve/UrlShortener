@@ -18,11 +18,14 @@ namespace Analytics.Infrastructure.Persistence.Configurations
             builder.Property(x => x.ClickedAtUtc)
                 .IsRequired();
 
-            // Setup foreign key
-            builder.HasOne(x => x.ShortenedUrlStats)
-                .WithMany()
-                .HasForeignKey(x => x.ShortenedUrlStatsId)
-                .OnDelete(DeleteBehavior.Cascade); // Deleting the stats deletes all its clicks
+            builder.Property(x => x.IpAddress)
+                .IsRequired(false)
+                .HasMaxLength(45); // IPv6 max length
+
+            builder.Property(x => x.UserAgent)
+                .IsRequired(false)
+                .HasMaxLength(512);
+
 
             // Index for querying clicks for a specific URL
             builder.HasIndex(x => x.ShortenedUrlStatsId);

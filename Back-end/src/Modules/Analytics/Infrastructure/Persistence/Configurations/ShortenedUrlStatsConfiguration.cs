@@ -23,6 +23,19 @@ namespace Analytics.Infrastructure.Persistence.Configurations
             builder.Property(x => x.UserId)
                 .IsRequired(false);
 
+            builder.Property(x => x.TotalClicks)
+                .IsRequired()
+                .HasDefaultValue(0);
+
+            builder.Property(x => x.LastClickedAtUtc)
+                .IsRequired(false);
+
+            // One-to-many: Stats -> ClickEvents
+            builder.HasMany(x => x.ClickEvents)
+                .WithOne(x => x.ShortenedUrlStats)
+                .HasForeignKey(x => x.ShortenedUrlStatsId)
+                .OnDelete(DeleteBehavior.Cascade);
+
             // Index on ShortCode for quick lookups when clicks happen
             builder.HasIndex(x => x.ShortCode)
                 .IsUnique();
