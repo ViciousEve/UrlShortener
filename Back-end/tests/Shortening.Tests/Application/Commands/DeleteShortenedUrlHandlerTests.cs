@@ -1,3 +1,4 @@
+using App.Exceptions;
 using FluentAssertions;
 using Moq;
 using Shortening.Application.Commands.DeleteShortenedUrl;
@@ -67,8 +68,8 @@ public class DeleteShortenedUrlHandlerTests
         var action = () => _handler.Handle(command, CancellationToken.None);
 
         // Assert
-        await action.Should().ThrowAsync<Exception>()
-            .WithMessage("*Short code not found*");
+        await action.Should().ThrowAsync<NotFoundException>()
+            .WithMessage("*not found*");
 
         _repositoryMock.Verify(x => x.DeleteAsync(It.IsAny<string>()), Times.Never);
     }
@@ -87,8 +88,8 @@ public class DeleteShortenedUrlHandlerTests
         var action = () => _handler.Handle(command, CancellationToken.None);
 
         // Assert
-        await action.Should().ThrowAsync<Exception>()
-            .WithMessage("*Short code not found*");
+        await action.Should().ThrowAsync<NotFoundException>()
+            .WithMessage("*not found*");
     }
 
     #endregion
@@ -114,8 +115,8 @@ public class DeleteShortenedUrlHandlerTests
         var action = () => _handler.Handle(command, CancellationToken.None);
 
         // Assert
-        await action.Should().ThrowAsync<Exception>()
-            .WithMessage("*Unauthorized*");
+        await action.Should().ThrowAsync<ForbiddenAccessException>()
+            .WithMessage("*permission*");
 
         _repositoryMock.Verify(x => x.DeleteAsync(It.IsAny<string>()), Times.Never);
     }
@@ -138,8 +139,8 @@ public class DeleteShortenedUrlHandlerTests
         var action = () => _handler.Handle(command, CancellationToken.None);
 
         // Assert
-        await action.Should().ThrowAsync<Exception>()
-            .WithMessage("*Unauthorized*");
+        await action.Should().ThrowAsync<ForbiddenAccessException>()
+            .WithMessage("*permission*");
     }
 
     [Fact]
@@ -159,8 +160,8 @@ public class DeleteShortenedUrlHandlerTests
         var action = () => _handler.Handle(command, CancellationToken.None);
 
         // Assert
-        await action.Should().ThrowAsync<Exception>()
-            .WithMessage("*Unauthorized*");
+        await action.Should().ThrowAsync<ForbiddenAccessException>()
+            .WithMessage("*permission*");
     }
 
     [Fact]
@@ -180,8 +181,8 @@ public class DeleteShortenedUrlHandlerTests
         var action = () => _handler.Handle(command, CancellationToken.None);
 
         // Assert
-        await action.Should().ThrowAsync<Exception>()
-            .WithMessage("*Unauthorized*");
+        await action.Should().ThrowAsync<ForbiddenAccessException>()
+            .WithMessage("*permission*");
     }
 
     #endregion
@@ -267,8 +268,8 @@ public class DeleteShortenedUrlHandlerTests
         var action = () => _handler.Handle(command, CancellationToken.None);
 
         // Assert
-        await action.Should().ThrowAsync<Exception>()
-            .WithMessage("*Short code not found*");
+        await action.Should().ThrowAsync<NotFoundException>()
+            .WithMessage("*not found*");
 
         // Verify the repository was called with the exact input
         _repositoryMock.Verify(x => x.GetByShortCodeAsync(maliciousCode), Times.Once);

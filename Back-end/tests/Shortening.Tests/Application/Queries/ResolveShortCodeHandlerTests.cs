@@ -1,3 +1,4 @@
+using App.Exceptions;
 using FluentAssertions;
 using MediatR;
 using Moq;
@@ -80,7 +81,7 @@ public class ResolveShortCodeHandlerTests
     #region Not Found (Edge Cases)
 
     [Fact]
-    public async Task Handle_WhenShortCodeNotFound_ShouldThrowKeyNotFoundException()
+    public async Task Handle_WhenShortCodeNotFound_ShouldThrowNotFoundException()
     {
         // Arrange
         var query = new ResolveShortCodeQuery("NotExist");
@@ -93,7 +94,7 @@ public class ResolveShortCodeHandlerTests
         var action = () => _handler.Handle(query, CancellationToken.None);
 
         // Assert
-        await action.Should().ThrowAsync<KeyNotFoundException>()
+        await action.Should().ThrowAsync<NotFoundException>()
             .WithMessage("*not found*");
 
         _publisherMock.Verify(
@@ -102,7 +103,7 @@ public class ResolveShortCodeHandlerTests
     }
 
     [Fact]
-    public async Task Handle_WithEmptyShortCode_ShouldThrowKeyNotFoundException()
+    public async Task Handle_WithEmptyShortCode_ShouldThrowNotFoundException()
     {
         // Arrange - Edge case: empty string
         var query = new ResolveShortCodeQuery(string.Empty);
@@ -115,7 +116,7 @@ public class ResolveShortCodeHandlerTests
         var action = () => _handler.Handle(query, CancellationToken.None);
 
         // Assert
-        await action.Should().ThrowAsync<KeyNotFoundException>();
+        await action.Should().ThrowAsync<NotFoundException>();
     }
 
     #endregion
@@ -140,7 +141,7 @@ public class ResolveShortCodeHandlerTests
         var action = () => _handler.Handle(query, CancellationToken.None);
 
         // Assert
-        await action.Should().ThrowAsync<Exception>()
+        await action.Should().ThrowAsync<ExpiredUrlException>()
             .WithMessage("*expired*");
 
         _publisherMock.Verify(
@@ -166,7 +167,7 @@ public class ResolveShortCodeHandlerTests
         var action = () => _handler.Handle(query, CancellationToken.None);
 
         // Assert
-        await action.Should().ThrowAsync<Exception>()
+        await action.Should().ThrowAsync<ExpiredUrlException>()
             .WithMessage("*expired*");
     }
 
@@ -192,8 +193,8 @@ public class ResolveShortCodeHandlerTests
         var action = () => _handler.Handle(query, CancellationToken.None);
 
         // Assert
-        await action.Should().ThrowAsync<Exception>()
-            .WithMessage("*disabled*");
+        await action.Should().ThrowAsync<NotFoundException>()
+            .WithMessage("*not found*");
 
         _publisherMock.Verify(
             x => x.Publish(It.IsAny<UrlClickedIntegrationEvent>(), It.IsAny<CancellationToken>()),
@@ -252,7 +253,7 @@ public class ResolveShortCodeHandlerTests
         var action = () => _handler.Handle(query, CancellationToken.None);
 
         // Assert
-        await action.Should().ThrowAsync<KeyNotFoundException>();
+        await action.Should().ThrowAsync<NotFoundException>();
         _repositoryMock.Verify(x => x.GetByShortCodeAsync(maliciousCode), Times.Once);
     }
 
