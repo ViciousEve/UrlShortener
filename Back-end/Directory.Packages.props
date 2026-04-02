@@ -11,6 +11,7 @@
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.0" />
     <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.0" />
     <PackageVersion Include="Microsoft.Extensions.Hosting.Abstractions" Version="9.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Caching.Memory" Version="9.0.0" />
     <PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="9.0.0" />
     <PackageVersion Include="Swashbuckle.AspNetCore" Version="6.6.2" />
     <!-- Test packages -->
