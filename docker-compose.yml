@@ -1,0 +1,29 @@
+services:
+  backend:
+    build:
+      context: ./Back-end
+      dockerfile: Dockerfile.dev
+    container_name: urlshortener-api
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./Back-end:/src
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres:17-alpine
+    container_name: urlshortener-db
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: P@ssw0rd!
+      POSTGRES_DB: urlshortener
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:
