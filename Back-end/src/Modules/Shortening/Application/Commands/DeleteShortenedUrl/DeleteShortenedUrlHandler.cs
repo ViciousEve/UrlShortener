@@ -1,4 +1,5 @@
 using MediatR;
+using App.Exceptions;
 using Shortening.Application.Contracts;
 
 namespace Shortening.Application.Commands.DeleteShortenedUrl
@@ -16,17 +17,15 @@ namespace Shortening.Application.Commands.DeleteShortenedUrl
             var shortenedUrl = await _repository.GetByShortCodeAsync(request.ShortCode);
             if (shortenedUrl == null)
             {
-                    throw new Exception("Short code not found");
+                throw new NotFoundException("ShortenedUrl", request.ShortCode);
             }
             //Verify ownership
             if (shortenedUrl.UserId != request.UserId || request.UserId == null)
             {
-                throw new Exception("Unauthorized to delete this URL");
+                throw new ForbiddenAccessException("You do not have permission to delete this URL.");
             }
             await _repository.DeleteAsync(request.ShortCode);
             await _repository.SaveChangesAsync();
         }
-
-
     }
 }

@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using MediatR;
 
 namespace Shortening.Application.Queries.ResolveShortCode
 {  
-    public record ResolveShortCodeQuery(string ShortCode) : IRequest<string>;
+    public record ResolveShortCodeQuery(string ShortCode, string? IpAddress = null, string? UserAgent = null) : IRequest<string>;
 }

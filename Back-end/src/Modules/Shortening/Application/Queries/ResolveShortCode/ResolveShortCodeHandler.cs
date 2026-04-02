@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using MediatR;
+using App.Exceptions;
 using Shortening.Application.Contracts;
 using Shortening.Application.IntegrationEvents;
 
@@ -25,37 +21,38 @@ namespace Shortening.Application.Queries.ResolveShortCode
             var shortenedUrl = await _repository.GetByShortCodeAsync(request.ShortCode);
             if (shortenedUrl == null)
             {
-                throw new KeyNotFoundException($"Shortened URL not found for code: {request.ShortCode}");
+                throw new NotFoundException("ShortenedUrl", request.ShortCode);
             }
 
-            if(shortenedUrl.Status == Domain.UrlStatus.Expired)
+            if (shortenedUrl.Status == Domain.UrlStatus.Expired)
             {
-                throw new Exception("Shortened URL has expired");
+                throw new ExpiredUrlException(request.ShortCode);
             }
             // Ttl check in case background job hasn't run yet to update status to expired
             if (shortenedUrl.ExpiresAt < DateTime.UtcNow)
             {
-                throw new Exception("Shortened URL has expired");
+                throw new ExpiredUrlException(request.ShortCode);
             }
 
-            if(shortenedUrl.Status == Domain.UrlStatus.Disabled)
+            if (shortenedUrl.Status == Domain.UrlStatus.Disabled)
             {
-                throw new Exception("Shortened URL is disabled");
+                throw new NotFoundException("ShortenedUrl", request.ShortCode);
             }
 
             //Publish an event for analytics if user is not anonymous
-            if(shortenedUrl.UserId != null) 
+            if (shortenedUrl.UserId != null)
             {
                 var clickedEvent = new UrlClickedIntegrationEvent(
                     shortenedUrl.Id,
                     shortenedUrl.ShortCode.Value,
                     shortenedUrl.OriginalUrl,
-                    shortenedUrl.UserId
+                    shortenedUrl.UserId,
+                    request.IpAddress,
+                    request.UserAgent
                 );
 
                 await _publisher.Publish(clickedEvent, cancellationToken);
             }
-            
 
             return shortenedUrl.OriginalUrl;
         }
