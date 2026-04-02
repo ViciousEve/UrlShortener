@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Shortening.Application.Contracts;
@@ -20,15 +16,21 @@ namespace Shortening
             //DbContext
             services.AddDbContext<ShorteningDbContext>(options =>
                 options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
+
+            //Caching
+            services.AddMemoryCache();
+
             //Register application services
-            services.AddScoped<IShortenedUrlRepository, ShortenedUrlRepository>();
+            services.AddScoped<ShortenedUrlRepository>();
+            services.AddScoped<IShortenedUrlRepository, CachedShortenedUrlRepository>();
             services.AddSingleton<IShortCodeGenerator, ShortCodeGenerator>();
+
             //MediatR
             services.AddMediatR(cfg => {
                 cfg.RegisterServicesFromAssemblies(typeof(ShorteningModule).Assembly);
                 cfg.AddOpenBehavior(typeof(ValidationBehavior<,>));
-
                 });
+
             //FluentValidation
             services.AddValidatorsFromAssembly(typeof(ShorteningModule).Assembly);
 
