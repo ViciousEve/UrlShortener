@@ -38,12 +38,12 @@ namespace Shortening.Infrastructure.Persistence
 
         public async Task<ShortenedUrl?> GetByShortCodeAsync(string shortCode)
         {
-            return await _context.ShortenedUrls.FirstOrDefaultAsync(x => x.ShortCode == new ShortCode(shortCode));          
+            return await _context.ShortenedUrls.AsNoTracking().FirstOrDefaultAsync(x => x.ShortCode == new ShortCode(shortCode));          
         }
 
         public async Task<IEnumerable<ShortenedUrl>> GetByUserIdAsync(Guid userId)
         {
-            return await _context.ShortenedUrls.Where(x => x.UserId == userId).ToListAsync();
+            return await _context.ShortenedUrls.AsNoTracking().Where(x => x.UserId == userId).ToListAsync();
         }
 
         public async Task<IEnumerable<ShortenedUrl>> GetExpiredUrlsAsync()
