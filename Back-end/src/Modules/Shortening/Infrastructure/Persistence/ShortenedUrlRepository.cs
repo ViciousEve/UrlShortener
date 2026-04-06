@@ -38,6 +38,11 @@ namespace Shortening.Infrastructure.Persistence
 
         public async Task<ShortenedUrl?> GetByShortCodeAsync(string shortCode)
         {
+            return await _context.ShortenedUrls.FirstOrDefaultAsync(x => x.ShortCode == new ShortCode(shortCode));          
+        }
+       
+        public async Task<ShortenedUrl?> FetchByShortCodeAsync(string shortCode)
+        {
             return await _context.ShortenedUrls.AsNoTracking().FirstOrDefaultAsync(x => x.ShortCode == new ShortCode(shortCode));          
         }
 

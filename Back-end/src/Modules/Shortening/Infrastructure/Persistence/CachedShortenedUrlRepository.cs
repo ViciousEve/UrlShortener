@@ -44,6 +44,25 @@ public class CachedShortenedUrlRepository : IShortenedUrlRepository
         return result;
     }
 
+    public async Task<ShortenedUrl?> FetchByShortCodeAsync(string shortCode)
+    {
+        var cacheKey = $"{CacheKeyPrefix}{shortCode}";
+
+        if (_cache.TryGetValue(cacheKey, out ShortenedUrl? cached))
+        {
+            return cached;
+        }
+
+        var result = await _inner.FetchByShortCodeAsync(shortCode);
+
+        if (result is not null)
+        {
+            _cache.Set(cacheKey, result, CacheOptions);
+        }
+
+        return result;
+    }
+
     public async Task<IEnumerable<ShortenedUrl>> GetByUserIdAsync(Guid userId)
     {
         // User URL lists are not cached — low frequency, high variability
