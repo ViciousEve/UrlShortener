@@ -12,9 +12,8 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
     <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" />
-    <!-- TODO: Add BCrypt.Net-Next for password hashing -->
-    <!-- <PackageReference Include="BCrypt.Net-Next" /> -->
-    <!-- Note: JWT support comes from FrameworkReference Microsoft.AspNetCore.App -->
+    <PackageReference Include="BCrypt.Net-Next"/>
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" />
   </ItemGroup>
   
   <ItemGroup>
