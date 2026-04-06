@@ -1,7 +1,9 @@
 <Solution>
   <Project Path="src/App/App.csproj" />
-  <Project Path="src/Modules/Shortening/Shortening.csproj" />
   <Project Path="src/Modules/Analytics/Analytics.csproj" />
+  <Project Path="src/Modules/Shortening/Shortening.csproj" />
+  <Project Path="src/Modules/Identity/Identity.csproj" />
   <Project Path="src/UrlShortener.API/UrlShortener.API.csproj" />
+  <Project Path="tests/Analytics.Tests/Analytics.Tests.csproj" Id="5e64a56b-9011-4d85-83bd-cd6d5da529f3" />
   <Project Path="tests/Shortening.Tests/Shortening.Tests.csproj" />
 </Solution>

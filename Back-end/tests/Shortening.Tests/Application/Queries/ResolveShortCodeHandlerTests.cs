@@ -40,7 +40,7 @@ public class ResolveShortCodeHandlerTests
             expiresAt: DateTime.UtcNow.AddHours(1));
 
         _repositoryMock
-            .Setup(x => x.GetByShortCodeAsync(shortCode))
+            .Setup(x => x.FetchByShortCodeAsync(shortCode))
             .ReturnsAsync(shortenedUrl);
 
         // Act
@@ -60,7 +60,7 @@ public class ResolveShortCodeHandlerTests
         var shortenedUrl = CreateTestShortenedUrl(shortCode, "https://example.com");
 
         _repositoryMock
-            .Setup(x => x.GetByShortCodeAsync(shortCode))
+            .Setup(x => x.FetchByShortCodeAsync(shortCode))
             .ReturnsAsync(shortenedUrl);
 
         // Act
@@ -87,7 +87,7 @@ public class ResolveShortCodeHandlerTests
         var query = new ResolveShortCodeQuery("NotExist");
 
         _repositoryMock
-            .Setup(x => x.GetByShortCodeAsync(It.IsAny<string>()))
+            .Setup(x => x.FetchByShortCodeAsync(It.IsAny<string>()))
             .ReturnsAsync((ShortenedUrl?)null);
 
         // Act
@@ -109,7 +109,7 @@ public class ResolveShortCodeHandlerTests
         var query = new ResolveShortCodeQuery(string.Empty);
 
         _repositoryMock
-            .Setup(x => x.GetByShortCodeAsync(string.Empty))
+            .Setup(x => x.FetchByShortCodeAsync(string.Empty))
             .ReturnsAsync((ShortenedUrl?)null);
 
         // Act
@@ -134,7 +134,7 @@ public class ResolveShortCodeHandlerTests
         shortenedUrl.Expire();
 
         _repositoryMock
-            .Setup(x => x.GetByShortCodeAsync(shortCode))
+            .Setup(x => x.FetchByShortCodeAsync(shortCode))
             .ReturnsAsync(shortenedUrl);
 
         // Act
@@ -160,7 +160,7 @@ public class ResolveShortCodeHandlerTests
         var shortenedUrl = CreateTestShortenedUrlWithPastExpiry(shortCode, "https://example.com");
 
         _repositoryMock
-            .Setup(x => x.GetByShortCodeAsync(shortCode))
+            .Setup(x => x.FetchByShortCodeAsync(shortCode))
             .ReturnsAsync(shortenedUrl);
 
         // Act
@@ -186,7 +186,7 @@ public class ResolveShortCodeHandlerTests
         shortenedUrl.Disable();
 
         _repositoryMock
-            .Setup(x => x.GetByShortCodeAsync(shortCode))
+            .Setup(x => x.FetchByShortCodeAsync(shortCode))
             .ReturnsAsync(shortenedUrl);
 
         // Act
@@ -215,7 +215,7 @@ public class ResolveShortCodeHandlerTests
         var shortenedUrl = CreateTestShortenedUrl(shortCode, "https://example.com");
 
         _repositoryMock
-            .Setup(x => x.GetByShortCodeAsync(shortCode))
+            .Setup(x => x.FetchByShortCodeAsync(shortCode))
             .ReturnsAsync(shortenedUrl);
 
         _publisherMock
@@ -246,7 +246,7 @@ public class ResolveShortCodeHandlerTests
         var query = new ResolveShortCodeQuery(maliciousCode);
 
         _repositoryMock
-            .Setup(x => x.GetByShortCodeAsync(maliciousCode))
+            .Setup(x => x.FetchByShortCodeAsync(maliciousCode))
             .ReturnsAsync((ShortenedUrl?)null);
 
         // Act
@@ -254,7 +254,7 @@ public class ResolveShortCodeHandlerTests
 
         // Assert
         await action.Should().ThrowAsync<NotFoundException>();
-        _repositoryMock.Verify(x => x.GetByShortCodeAsync(maliciousCode), Times.Once);
+        _repositoryMock.Verify(x => x.FetchByShortCodeAsync(maliciousCode), Times.Once);
     }
 
     #endregion
@@ -272,7 +272,7 @@ public class ResolveShortCodeHandlerTests
         var shortenedUrl = CreateTestShortenedUrl(shortCode, complexUrl);
 
         _repositoryMock
-            .Setup(x => x.GetByShortCodeAsync(shortCode))
+            .Setup(x => x.FetchByShortCodeAsync(shortCode))
             .ReturnsAsync(shortenedUrl);
 
         // Act
@@ -293,7 +293,7 @@ public class ResolveShortCodeHandlerTests
         var shortenedUrl = CreateTestShortenedUrl(shortCode, longUrl);
 
         _repositoryMock
-            .Setup(x => x.GetByShortCodeAsync(shortCode))
+            .Setup(x => x.FetchByShortCodeAsync(shortCode))
             .ReturnsAsync(shortenedUrl);
 
         // Act
@@ -318,7 +318,7 @@ public class ResolveShortCodeHandlerTests
         var shortenedUrl = CreateTestShortenedUrl(shortCode, "https://example.com");
 
         _repositoryMock
-            .Setup(x => x.GetByShortCodeAsync(shortCode))
+            .Setup(x => x.FetchByShortCodeAsync(shortCode))
             .ReturnsAsync(shortenedUrl);
 
         // Act
