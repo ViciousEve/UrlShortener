@@ -59,7 +59,7 @@ namespace Identity.Domain
         {
             if(!IsValidUser(email, username, passwordHash))
             throw new ArgumentException("Invalid user data");
-            Id = Guid.NewGuid();
+            Id = Guid.CreateVersion7();
             Email = email;
             Username = username;
             PasswordHash = passwordHash;
