@@ -17,7 +17,7 @@ namespace Analytics.Domain
 
         public ClickEvent(Guid shortenedUrlStatsId, DateTime clickedAtUtc, string? ipAddress, string? userAgent)
         {
-            Id = Guid.NewGuid();
+            Id = Guid.CreateVersion7();
             ShortenedUrlStatsId = shortenedUrlStatsId;
             ClickedAtUtc = clickedAtUtc;
             IpAddress = ipAddress;

@@ -28,7 +28,7 @@ namespace Shortening.Domain
             if (expiresAt < DateTime.UtcNow)
                 throw new ArgumentException("Expires at must be in the future", nameof(expiresAt));
 
-            Id = Guid.NewGuid();
+            Id = Guid.CreateVersion7();
             OriginalUrl = originalUrl;
             ShortCode = shortCode;
             Status = UrlStatus.Active;

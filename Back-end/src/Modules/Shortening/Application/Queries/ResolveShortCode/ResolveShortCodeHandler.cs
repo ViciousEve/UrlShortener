@@ -18,7 +18,7 @@ namespace Shortening.Application.Queries.ResolveShortCode
         public async Task<string> Handle(ResolveShortCodeQuery request, CancellationToken cancellationToken)
         {
             // Retrieve the shortened URL entity from the repository
-            var shortenedUrl = await _repository.GetByShortCodeAsync(request.ShortCode);
+            var shortenedUrl = await _repository.FetchByShortCodeAsync(request.ShortCode);
             if (shortenedUrl == null)
             {
                 throw new NotFoundException("ShortenedUrl", request.ShortCode);
