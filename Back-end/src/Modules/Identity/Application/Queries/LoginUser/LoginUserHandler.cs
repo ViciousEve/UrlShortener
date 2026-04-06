@@ -4,22 +4,6 @@ using Identity.Application.DTOs;
 
 namespace Identity.Application.Queries.LoginUser
 {
-    /// <summary>
-    /// Handles the LoginUserQuery — orchestrates user authentication.
-    /// 
-    /// IMPLEMENTATION NOTES:
-    /// 
-    /// 1. This handler's job:
-    ///    - Look up the user by email
-    ///    - Verify the password
-    ///    - Generate and return a JWT token
-    ///    
-    /// 2. Security considerations:
-    ///    - NEVER reveal whether the email exists or the password is wrong.
-    ///      Always use a generic message like "Invalid email or password"
-    ///      to prevent user enumeration attacks.
-    ///    - Consider adding rate limiting at the API level (not here).
-    /// </summary>
     public class LoginUserHandler : IRequestHandler<LoginUserQuery, AuthResponse>
     {
         private readonly IUserRepository _userRepository;
@@ -49,7 +33,7 @@ namespace Identity.Application.Queries.LoginUser
                 throw new InvalidOperationException("Invalid email or password");
             }
             var tokenResult = _jwtProvider.GenerateToken(user);
-            return new AuthResponse { Token = tokenResult.Token, ExpiresAtUtc = tokenResult.ExpiresAtUtc };
+            return new AuthResponse { AccessToken = tokenResult.AccessToken, ExpiresAtUtc = tokenResult.ExpiresAtUtc };
         }
     }
 }

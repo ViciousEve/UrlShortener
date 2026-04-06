@@ -5,19 +5,6 @@ using Identity.Domain;
 
 namespace Identity.Application.Commands.RegisterUser
 {
-    /// <summary>
-    /// Handles the RegisterUserCommand — orchestrates user registration.
-    /// Same pattern as CreateShortenedUrlHandler in the Shortening module.
-    /// 
-    /// IMPLEMENTATION NOTES:
-    /// 
-    /// 1. Dependencies are injected via constructor (DI pattern).
-    ///    The DI container resolves these from IdentityModule.cs registrations.
-    ///    
-    /// 2. The handler is the "use case" in Clean Architecture — it coordinates
-    ///    between domain objects and infrastructure services, but contains
-    ///    no business rules itself (those live in the User entity).
-    /// </summary>
     public class RegisterUserHandler : IRequestHandler<RegisterUserCommand, AuthResponse>
     {
         private readonly IUserRepository _userRepository;
@@ -47,7 +34,7 @@ namespace Identity.Application.Commands.RegisterUser
             await _userRepository.AddAsync(user);
             await _userRepository.SaveChangesAsync();
             var tokenResult = _jwtProvider.GenerateToken(user);
-            return new AuthResponse { Token = tokenResult.Token, ExpiresAtUtc = tokenResult.ExpiresAtUtc };
+            return new AuthResponse { AccessToken = tokenResult.AccessToken, ExpiresAtUtc = tokenResult.ExpiresAtUtc };
         }
     }
 }
