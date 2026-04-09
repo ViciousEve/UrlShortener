@@ -14,4 +14,8 @@ public sealed class NotFoundException : Exception
         EntityName = entityName;
         Key = key;
     }
+
+    public NotFoundException(string message) : base(message)
+    {
+    }
 }
