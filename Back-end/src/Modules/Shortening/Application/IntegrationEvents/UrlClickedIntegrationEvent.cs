@@ -16,7 +16,7 @@ namespace Shortening.Application.IntegrationEvents
 
         public UrlClickedIntegrationEvent(Guid shortenedUrlId, string shortCode, string originalUrl, Guid? userId, string? ipAddress, string? userAgent)
         {
-            Id = Guid.NewGuid();
+            Id = Guid.CreateVersion7();
             OccurredOnUtc = DateTime.UtcNow;
             ShortenedUrlId = shortenedUrlId;
             ShortCode = shortCode;

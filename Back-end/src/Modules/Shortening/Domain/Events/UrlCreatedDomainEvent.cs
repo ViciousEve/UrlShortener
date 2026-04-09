@@ -18,7 +18,7 @@ namespace Shortening.Domain.Events
             Guid? userId,
             DateTime expiresAtUtc)
         {
-            Id = Guid.NewGuid();
+            Id = Guid.CreateVersion7();
             OccurredOnUtc = DateTime.UtcNow;
             ShortenedUrlId = shortenedUrlId;
             ShortCode = shortCode;
