@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using UrlShortener.API.Swagger;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -19,7 +21,20 @@ builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddProblemDetails();
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        Scheme = "bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+        Description = "Enter JWT token only. Example: eyJhbGciOi..."
+    });
+
+    options.OperationFilter<AuthorizeCheckOperationFilter>();
+});
 
 //Add modules
 builder.Services.AddShorteningModule(builder.Configuration);
@@ -43,6 +58,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 Encoding.UTF8.GetBytes(jwtSettings["SecretKey"]!))
         };
     });
+builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
