@@ -33,63 +33,36 @@ namespace Identity.Infrastructure.Persistence
             _dbContext = dbContext;
         }
 
-        /// <summary>
-        /// IMPLEMENT: Look up user by ID.
-        /// return await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == userId);
-        /// </summary>
         public async Task<User?> GetByIdAsync(Guid userId)
         {
-            // TODO: Implement
-            throw new NotImplementedException();
+            return await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == userId);
         }
 
-        /// <summary>
-        /// IMPLEMENT: Look up user by email (used during login).
-        /// Normalize the email before comparing.
-        /// 
-        /// var normalizedEmail = email.Trim().ToLowerInvariant();
-        /// return await _dbContext.Users
-        ///     .FirstOrDefaultAsync(u => u.Email == new Email(normalizedEmail));
-        /// 
-        /// Note: EF will use the value conversion to compare against the stored string.
-        /// </summary>
         public async Task<User?> GetByEmailAsync(string email)
         {
-            // TODO: Implement
-            throw new NotImplementedException();
+            var normalizedEmail = email.Trim().ToLowerInvariant();
+            return await _dbContext.Users.
+                AsNoTracking().
+                FirstOrDefaultAsync(u => u.Email == new Email(normalizedEmail));
         }
 
-        /// <summary>
-        /// IMPLEMENT: Check if email already exists (used during registration).
-        /// 
-        /// var normalizedEmail = email.Trim().ToLowerInvariant();
-        /// return await _dbContext.Users
-        ///     .AnyAsync(u => u.Email == new Email(normalizedEmail));
-        /// </summary>
         public async Task<bool> ExistsByEmailAsync(string email)
         {
-            // TODO: Implement
-            throw new NotImplementedException();
+            var normalizedEmail = email.Trim().ToLowerInvariant(); 
+            return await _dbContext.Users
+                .AsNoTracking()
+                .AnyAsync(u => u.Email == new Email(normalizedEmail));
         }
 
-        /// <summary>
-        /// IMPLEMENT: Add a new user to the DbContext.
-        /// await _dbContext.Users.AddAsync(user);
-        /// </summary>
         public async Task AddAsync(User user)
         {
-            // TODO: Implement
-            throw new NotImplementedException();
+            await _dbContext.Users.AddAsync(user);
         }
 
-        /// <summary>
-        /// IMPLEMENT: Commit pending changes.
-        /// await _dbContext.SaveChangesAsync();
-        /// </summary>
+ 
         public async Task SaveChangesAsync()
         {
-            // TODO: Implement
-            throw new NotImplementedException();
+            await _dbContext.SaveChangesAsync();
         }
     }
 }

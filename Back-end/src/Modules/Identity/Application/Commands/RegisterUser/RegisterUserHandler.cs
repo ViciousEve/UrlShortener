@@ -2,6 +2,7 @@ using MediatR;
 using Identity.Application.Contracts;
 using Identity.Application.DTOs;
 using Identity.Domain;
+using App.Exceptions;
 
 namespace Identity.Application.Commands.RegisterUser
 {
@@ -26,7 +27,7 @@ namespace Identity.Application.Commands.RegisterUser
             var exists = await _userRepository.ExistsByEmailAsync(request.Email);
             if(exists)
             {
-                throw new InvalidOperationException("Email already registered");
+                throw new ConflictException("Email already registered");
             }
             var passwordHash = _passwordHasher.Hash(request.Password);
             var email = new Email(request.Email);

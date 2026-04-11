@@ -1,6 +1,7 @@
 using MediatR;
 using Identity.Application.Contracts;
 using Identity.Application.DTOs;
+using App.Exceptions;
 
 namespace Identity.Application.Queries.LoginUser
 {
@@ -25,12 +26,12 @@ namespace Identity.Application.Queries.LoginUser
             var user = await _userRepository.GetByEmailAsync(request.Email);
             if(user is null)
             {
-                throw new InvalidOperationException("Invalid email or password");
+                throw new UnauthorizedException("Invalid email or password");
             }
             var isValid = _passwordHasher.Verify(request.Password, user.PasswordHash);
             if(!isValid)
             {
-                throw new InvalidOperationException("Invalid email or password");
+                throw new UnauthorizedException("Invalid email or password");
             }
             var tokenResult = _jwtProvider.GenerateToken(user);
             return new AuthResponse { AccessToken = tokenResult.AccessToken, ExpiresAtUtc = tokenResult.ExpiresAtUtc };
