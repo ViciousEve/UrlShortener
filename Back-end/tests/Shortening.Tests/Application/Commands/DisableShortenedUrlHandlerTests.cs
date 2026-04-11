@@ -87,29 +87,13 @@ public class DisableShortenedUrlHandlerTests
         _repoMock.Verify(r => r.SaveChangesAsync(), Times.Never);
     }
 
-    // ─── Wrong user (silent ignore) ───────────────────────────────────────────────
+    // ─── Wrong user ───────────────────────────────────────────────
+
 
     [Fact]
-    public async Task Handle_WhenCallerIsNotOwner_ShouldReturnWithoutDisabling()
+    public async Task Handle_WhenCallerIsNotOwner_ShouldThrowForbiddenAccessException()
     {
-        // Arrange
-        var url = BuildActiveUrl(OwnerId);
-        SetupRepo("abc123", url);
-
-        var command = new DisableShortenedUrlCommand("abc123", StrangerId);
-
-        // Act
-        await _handler.Handle(command, CancellationToken.None);
-
-        // Assert: silently ignored — URL still Active, no save
-        url.Status.Should().Be(UrlStatus.Active);
-        _repoMock.Verify(r => r.SaveChangesAsync(), Times.Never);
-    }
-
-    [Fact]
-    public async Task Handle_WhenCallerIsNotOwner_ShouldNotThrow()
-    {
-        // Arrange — handler returns early for wrong owner without exception
+        // Arrange 
         var url = BuildActiveUrl(OwnerId);
         SetupRepo("abc123", url);
 
@@ -117,22 +101,23 @@ public class DisableShortenedUrlHandlerTests
 
         // Act / Assert
         await _handler.Invoking(h => h.Handle(command, CancellationToken.None))
-                      .Should().NotThrowAsync();
+                      .Should().ThrowAsync<ForbiddenAccessException>();
     }
 
     // ─── Anonymous URL (null UserId) ──────────────────────────────────────────────
 
     [Fact]
-    public async Task Handle_WhenUrlIsAnonymousAndCallerHasAnyId_ShouldNotDisable()
+    public async Task Handle_WhenUrlIsAnonymousAndCallerHasAnyId_ShouldNotDisableAndThrowForbiddenAccessException()
     {
-        // Url.UserId is null → no owner → request.UserId != null → silently ignored
+        // Arrange
         var url = BuildActiveUrl(userId: null);
         SetupRepo("anon01", url);
 
         var command = new DisableShortenedUrlCommand("anon01", OwnerId);
 
-        await _handler.Handle(command, CancellationToken.None);
-
+        // Act / Assert
+        await _handler.Invoking(h => h.Handle(command, CancellationToken.None))
+                      .Should().ThrowAsync<ForbiddenAccessException>();
         url.Status.Should().Be(UrlStatus.Active);
         _repoMock.Verify(r => r.SaveChangesAsync(), Times.Never);
     }
