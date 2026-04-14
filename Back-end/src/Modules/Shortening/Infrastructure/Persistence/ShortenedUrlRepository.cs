@@ -19,7 +19,7 @@ namespace Shortening.Infrastructure.Persistence
         public async Task AddAsync(ShortenedUrl shortenedUrl)
         {
             //add to database
-            _context.Add(shortenedUrl);
+            await _context.AddAsync(shortenedUrl);
         }
 
         public async Task DeleteAsync(string shortCode)

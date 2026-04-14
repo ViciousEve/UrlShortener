@@ -25,23 +25,10 @@ public class CachedShortenedUrlRepository : IShortenedUrlRepository
         _cache = cache;
     }
 
+    //Updates is infrequent, no need for caching
     public async Task<ShortenedUrl?> GetByShortCodeAsync(string shortCode)
     {
-        var cacheKey = $"{CacheKeyPrefix}{shortCode}";
-
-        if (_cache.TryGetValue(cacheKey, out ShortenedUrl? cached))
-        {
-            return cached;
-        }
-
-        var result = await _inner.GetByShortCodeAsync(shortCode);
-
-        if (result is not null)
-        {
-            _cache.Set(cacheKey, result, CacheOptions);
-        }
-
-        return result;
+        return await _inner.GetByShortCodeAsync(shortCode);
     }
 
     public async Task<ShortenedUrl?> FetchByShortCodeAsync(string shortCode)
