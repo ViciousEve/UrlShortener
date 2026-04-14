@@ -34,6 +34,9 @@ namespace Shortening
             //FluentValidation
             services.AddValidatorsFromAssembly(typeof(ShorteningModule).Assembly);
 
+            //Register background service
+            services.AddHostedService<UrlExpirationService>();
+
             return services;
         }
     }
