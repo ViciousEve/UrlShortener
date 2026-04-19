@@ -1,0 +1,23 @@
+FROM mcr.microsoft.com/dotnet/sdk:9.0
+
+WORKDIR /src
+
+# Copy solution-level files for restore
+COPY Directory.Build.props ./
+COPY Directory.Packages.props ./
+COPY src/UrlShortener.API/UrlShortener.API.csproj src/UrlShortener.API/
+COPY src/App/App.csproj src/App/
+COPY src/Modules/Shortening/Shortening.csproj src/Modules/Shortening/
+COPY src/Modules/Analytics/Analytics.csproj src/Modules/Analytics/
+COPY src/Modules/Identity/Identity.csproj src/Modules/Identity/
+
+RUN dotnet restore src/UrlShortener.API/UrlShortener.API.csproj
+
+# Copy everything else
+COPY . ./
+
+EXPOSE 8080
+ENV ASPNETCORE_URLS=http://+:8080
+ENV ASPNETCORE_ENVIRONMENT=Development
+
+ENTRYPOINT ["dotnet", "watch", "run", "--no-launch-profile", "--project", "src/UrlShortener.API/UrlShortener.API.csproj"]
