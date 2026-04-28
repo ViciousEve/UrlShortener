@@ -20,6 +20,7 @@ namespace Shortening.Application.Commands.DisableShortenedUrl
             if(shortenedUrl.UserId != request.UserId)
                 throw new ForbiddenAccessException();
             shortenedUrl.Disable();
+            await _repository.DisableAsync(request.ShortCode);
             await _repository.SaveChangesAsync();
         }
 

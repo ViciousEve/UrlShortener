@@ -174,6 +174,7 @@ public class DisableShortenedUrlHandlerTests
     private void SetupRepo(string shortCode, ShortenedUrl url)
     {
         _repoMock.Setup(r => r.GetByShortCodeAsync(shortCode)).ReturnsAsync(url);
+        _repoMock.Setup(r => r.DisableAsync(shortCode)).Returns(Task.CompletedTask);
         _repoMock.Setup(r => r.SaveChangesAsync()).Returns(Task.CompletedTask);
     }
 }

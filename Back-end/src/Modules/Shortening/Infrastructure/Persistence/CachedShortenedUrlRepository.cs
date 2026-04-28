@@ -68,6 +68,11 @@ public class CachedShortenedUrlRepository : IShortenedUrlRepository
         await _inner.DeleteAsync(shortCode);
     }
 
+    public async Task DisableAsync(string shortCode) {
+        _cache.Remove($"{CacheKeyPrefix}{shortCode}");
+        await _inner.DisableAsync(shortCode);
+    }
+
     public async Task SaveChangesAsync()
     {
         await _inner.SaveChangesAsync();

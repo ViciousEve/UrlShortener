@@ -10,6 +10,7 @@ namespace Shortening.Application.Contracts
         Task SaveChangesAsync();
         Task AddAsync(ShortenedUrl shortenedUrl);
         Task DeleteAsync(string shortCode);
+        Task DisableAsync(string shortCode);
         Task<IEnumerable<ShortenedUrl>> GetExpiredUrlsAsync();
     }
 }
