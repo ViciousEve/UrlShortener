@@ -9,6 +9,7 @@ namespace Analytics.Application.Contracts
         Task<IEnumerable<ClickEvent>> GetClicksByShortCodeAsync(string shortCode);
         Task<int> GetTotalClickForUserInPeriodAsync(Guid userId, DateTime fromDate, DateTime toDate);
         Task<ShortenedUrlStats?> GetStatsByIdAsync(Guid shortenedUrlStatsId);
+        Task<ShortenedUrlStats?> GetStatsByShortCodeAsync(string shortCode);
         Task<IEnumerable<ShortenedUrlClickStats>> GetTotalClickForUserRankedAsync(Guid userId);
         Task<IEnumerable<string>> GetTopBrowserForUserAsync(Guid userId, int topN);
         Task AddStatsAsync(ShortenedUrlStats stats);

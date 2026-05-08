@@ -36,6 +36,13 @@ namespace Analytics.Infrastructure.Persistence
                 .FirstOrDefaultAsync(s => s.Id == shortenedUrlStatsId);
         }
 
+        public async Task<ShortenedUrlStats?> GetStatsByShortCodeAsync(string shortCode)
+        {
+            return await _context.ShortenedUrlStats
+                .AsNoTracking()
+                .FirstOrDefaultAsync(s => s.ShortCode == shortCode);
+        }
+
         public async Task AddStatsAsync(ShortenedUrlStats stats)
         {
             await _context.ShortenedUrlStats.AddAsync(stats);
