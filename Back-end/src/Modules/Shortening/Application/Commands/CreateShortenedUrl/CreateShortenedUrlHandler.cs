@@ -1,4 +1,6 @@
 using MediatR;
+using Microsoft.Extensions.Options;
+using Shortening.Application.Configuration;
 using Shortening.Application.Contracts;
 using Shortening.Application.DTOs;
 using Shortening.Domain;
@@ -9,12 +11,15 @@ namespace Shortening.Application.Commands.CreateShortenedUrl
     {
         private readonly IShortenedUrlRepository _repository;
         private readonly IShortCodeGenerator _shortCodeGenerator;
+        private readonly AppUrlSettings _appUrlSettings;
 
         public CreateShortenedUrlHandler(IShortenedUrlRepository repository, 
-            IShortCodeGenerator shortCodeGenerator)
+            IShortCodeGenerator shortCodeGenerator,
+            IOptions<AppUrlSettings> appUrlSettings)
         {
             _repository = repository;
             _shortCodeGenerator = shortCodeGenerator;
+            _appUrlSettings = appUrlSettings.Value;
         }
 
 
@@ -38,6 +43,7 @@ namespace Shortening.Application.Commands.CreateShortenedUrl
             return new ShortenedUrlResponse
             {
                 ShortCode = shortenedUrl.ShortCode.Value,
+                ShortUrl = $"{_appUrlSettings.AppUrl}/s/{shortenedUrl.ShortCode.Value}",
                 OriginalUrl = shortenedUrl.OriginalUrl,
                 CreatedAt = shortenedUrl.CreatedAt,
                 ExpiresAt = shortenedUrl.ExpiresAt,

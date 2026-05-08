@@ -1,5 +1,7 @@
 using FluentAssertions;
+using Microsoft.Extensions.Options;
 using Moq;
+using Shortening.Application.Configuration;
 using Shortening.Application.Contracts;
 using Shortening.Application.Queries.GetUserUrls;
 using Shortening.Domain;
@@ -9,12 +11,15 @@ namespace Shortening.Tests.Application.Queries;
 public class GetUserUrlsHandlerTests
 {
     private readonly Mock<IShortenedUrlRepository> _repositoryMock;
+    private readonly Mock<IOptions<AppUrlSettings>> _appUrlSettingsMock;
     private readonly GetUserUrlsHandler _handler;
 
     public GetUserUrlsHandlerTests()
     {
         _repositoryMock = new Mock<IShortenedUrlRepository>();
-        _handler = new GetUserUrlsHandler(_repositoryMock.Object);
+        _appUrlSettingsMock = new Mock<IOptions<AppUrlSettings>>();
+        _appUrlSettingsMock.Setup(s => s.Value).Returns(new AppUrlSettings { AppUrl = "https://localhost" });
+        _handler = new GetUserUrlsHandler(_repositoryMock.Object, _appUrlSettingsMock.Object);
     }
 
     #region Successful Retrieval
