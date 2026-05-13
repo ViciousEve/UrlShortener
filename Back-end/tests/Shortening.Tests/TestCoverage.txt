@@ -1,0 +1,325 @@
+================================================================================
+                     SHORTENING MODULE - TEST COVERAGE SUMMARY
+================================================================================
+
+Total Tests: 216
+Status: All Passing
+
+================================================================================
+DOMAIN TESTS
+================================================================================
+
+ShortCodeTests.cs (Domain/ShortCodeTests.cs)
+--------------------------------------------
+Valid Short Codes:
+  - Constructor_WithValidAlphanumericCode_ShouldCreateShortCode
+  - Constructor_WithValidEightCharacterCodes_ShouldSucceed (lowercase, uppercase, numbers, mixed)
+
+Empty/Null Input (Edge Cases & User Mistakes):
+  - Constructor_WithNullValue_ShouldThrowArgumentException
+  - Constructor_WithEmptyString_ShouldThrowArgumentException
+  - Constructor_WithWhitespaceOnly_ShouldThrowArgumentException
+
+Invalid Length (Edge Cases):
+  - Constructor_WithLessThanEightCharacters_ShouldThrowArgumentException
+  - Constructor_WithMoreThanEightCharacters_ShouldThrowArgumentException
+
+Invalid Characters (User Mistakes & Security):
+  - Constructor_WithSpecialCharacters_ShouldThrowArgumentException (hyphen, underscore, dot, space)
+  - Constructor_WithNonAsciiCharacters_ShouldThrowArgumentException (Cyrillic, Chinese, Greek)
+
+Security - Malicious Input Attempts:
+  - Constructor_WithMaliciousPatterns_ShouldThrowArgumentException (SQL injection, XSS, path traversal, template injection)
+  - Constructor_WithNullByteInjection_ShouldThrowArgumentException
+  - Constructor_WithControlCharacters_ShouldThrowArgumentException
+  - Constructor_WithNewlineCharacters_ShouldThrowArgumentException
+
+Boundary Cases:
+  - Constructor_WithExactlyEightDigits_ShouldSucceed
+  - Constructor_WithMixedCasePreserved_ShouldPreserveCase
+
+--------------------------------------------------------------------------------
+
+ShortenedUrlTests.cs (Domain/ShortenedUrlTests.cs)
+--------------------------------------------------
+Constructor - Valid Cases:
+  - Constructor_WithValidParameters_ShouldCreateShortenedUrl
+  - Constructor_WithNullUserId_ShouldCreateAnonymousShortenedUrl
+  - Constructor_ShouldSetCreatedAtToUtcNow
+  - Constructor_ShouldRaiseUrlCreatedDomainEvent
+
+Constructor - Invalid Original URL (Edge Cases & User Mistakes):
+  - Constructor_WithNullOriginalUrl_ShouldThrowArgumentException
+  - Constructor_WithEmptyOriginalUrl_ShouldThrowArgumentException
+  - Constructor_WithWhitespaceOriginalUrl_ShouldNotThrowAtDomainLevel
+
+Constructor - Invalid ShortCode:
+  - Constructor_WithNullShortCode_ShouldThrowArgumentNullException
+
+Constructor - Invalid Expiry Date (Edge Cases & User Mistakes):
+  - Constructor_WithPastExpiryDate_ShouldThrowArgumentException
+  - Constructor_WithExpiryDateExactlyNow_ShouldThrowArgumentException
+  - Constructor_WithMinDateTimeExpiry_ShouldThrowArgumentException
+  - Constructor_WithVeryFarFutureExpiry_ShouldSucceed
+
+Disable Method:
+  - Disable_WhenStatusIsActive_ShouldSetStatusToDisabled
+  - Disable_WhenStatusIsExpired_ShouldThrowInvalidOperationException
+  - Disable_WhenAlreadyDisabled_ShouldRemainDisabled
+
+Expire Method:
+  - Expire_WhenStatusIsActive_ShouldSetStatusToExpired
+  - Expire_ShouldRaiseUrlExpiredDomainEvent
+  - Expire_WhenStatusIsDisabled_ShouldSetStatusToExpired
+
+Security - Malicious URL Inputs:
+  - Constructor_WithMaliciousProtocols_ShouldStillCreate (documents domain behavior)
+  - Constructor_WithVeryLongUrl_ShouldAcceptUrl
+
+Domain Events Management:
+  - ClearDomainEvents_ShouldRemoveAllEvents
+
+
+================================================================================
+APPLICATION TESTS - COMMANDS
+================================================================================
+
+CreateShortenedUrlHandlerTests.cs (Application/Commands/)
+---------------------------------------------------------
+Successful Creation:
+  - Handle_WithValidCommand_ShouldCreateAndPersistShortenedUrl
+  - Handle_WithValidCommand_ShouldSetCorrectExpirationTime
+  - Handle_WithAnonymousUser_ShouldCreateUrlWithNullUserId
+
+Repository Interaction:
+  - Handle_ShouldCallRepositoryAddAsync
+  - Handle_WhenRepositoryFails_ShouldPropagateException
+  - Handle_WhenSaveChangesFails_ShouldPropagateException
+
+Short Code Generator Interaction:
+  - Handle_ShouldUseGeneratedShortCode
+  - Handle_WhenGeneratorReturnsInvalidCode_ShouldThrowException
+
+Edge Cases - TTL Values:
+  - Handle_WithAllowedTtlValues_ShouldSucceed (15, 30, 60, 180 minutes)
+
+Cancellation Token:
+  - Handle_WithCancelledToken_ShouldStillComplete
+
+--------------------------------------------------------------------------------
+
+DeleteShortenedUrlHandlerTests.cs (Application/Commands/)
+---------------------------------------------------------
+Successful Deletion:
+  - Handle_WithValidOwner_ShouldDeleteUrl
+
+Not Found (Edge Cases):
+  - Handle_WhenShortCodeNotFound_ShouldThrowException
+  - Handle_WithEmptyShortCode_ShouldCallRepositoryWithEmptyString
+
+Authorization (Security):
+  - Handle_WhenUserIsNotOwner_ShouldThrowUnauthorizedException
+  - Handle_WhenUserIdIsNull_ShouldThrowUnauthorizedException
+  - Handle_AnonymousUrlWithAnonymousUser_ShouldStillThrowUnauthorized
+  - Handle_AnonymousUrlWithAuthenticatedUser_ShouldThrowUnauthorized
+
+Repository Failures:
+  - Handle_WhenDeleteAsyncFails_ShouldPropagateException
+  - Handle_WhenSaveChangesFails_ShouldPropagateException
+
+Security - Malicious Input:
+  - Handle_WithMaliciousShortCode_ShouldQueryRepositorySafely (SQL injection, XSS, path traversal, template injection, null byte)
+
+
+================================================================================
+APPLICATION TESTS - QUERIES
+================================================================================
+
+ResolveShortCodeHandlerTests.cs (Application/Queries/)
+------------------------------------------------------
+Successful Resolution:
+  - Handle_WithValidActiveShortCode_ShouldReturnOriginalUrl
+  - Handle_WithValidShortCode_ShouldPublishClickEvent
+
+Not Found (Edge Cases):
+  - Handle_WhenShortCodeNotFound_ShouldThrowKeyNotFoundException
+  - Handle_WithEmptyShortCode_ShouldThrowKeyNotFoundException
+
+Expired URLs:
+  - Handle_WhenUrlStatusIsExpired_ShouldThrowException
+  - Handle_WhenExpiryDateHasPassed_ShouldThrowException
+
+Disabled URLs:
+  - Handle_WhenUrlIsDisabled_ShouldThrowException
+
+Publisher Failures:
+  - Handle_WhenPublisherFails_ShouldPropagateException
+
+Security - Malicious Input:
+  - Handle_WithMaliciousShortCode_ShouldQuerySafelyAndReturnNotFound
+
+Edge Cases - URLs with Various Content:
+  - Handle_WithUrlContainingQueryParameters_ShouldReturnFullUrl
+  - Handle_WithVeryLongOriginalUrl_ShouldReturnFullUrl
+
+Cancellation Token:
+  - Handle_ShouldPassCancellationTokenToPublisher
+
+--------------------------------------------------------------------------------
+
+GetUserUrlsHandlerTests.cs (Application/Queries/)
+-------------------------------------------------
+Successful Retrieval:
+  - Handle_WithValidUserId_ShouldReturnUserUrls
+  - Handle_ShouldMapAllPropertiesCorrectly
+
+Empty Results (Edge Cases):
+  - Handle_WhenUserHasNoUrls_ShouldReturnEmptyCollection
+  - Handle_WhenRepositoryReturnsNull_ShouldReturnEmptyCollection
+  - Handle_WithNewUserGuid_ShouldReturnEmptyCollection
+
+Various URL States:
+  - Handle_ShouldReturnUrlsInAllStates (Active, Disabled, Expired)
+
+Large Result Sets (Performance Edge Cases):
+  - Handle_WithManyUrls_ShouldReturnAllUrls
+
+Security:
+  - Handle_ShouldOnlyQueryForSpecificUserId
+  - Handle_WithEmptyGuid_ShouldStillQueryRepository
+
+Repository Failures:
+  - Handle_WhenRepositoryFails_ShouldPropagateException
+  - Handle_WhenRepositoryTimesOut_ShouldPropagateException
+
+
+================================================================================
+APPLICATION TESTS - VALIDATORS
+================================================================================
+
+CreateShortenedUrlValidatorTests.cs (Application/Validators/)
+-------------------------------------------------------------
+Valid Commands:
+  - Validate_WithValidHttpsUrl_ShouldPass
+  - Validate_WithValidHttpUrl_ShouldPass
+  - Validate_WithAllowedTtlValues_ShouldPass (15, 30, 60, 180)
+
+Invalid URL (User Mistakes):
+  - Validate_WithEmptyUrl_ShouldFail
+  - Validate_WithNullUrl_ShouldFail
+  - Validate_WithWhitespaceOnlyUrl_ShouldFail
+  - Validate_WithInvalidUrlFormat_ShouldFail
+  - Validate_WithNonHttpScheme_ShouldFail (ftp, file, mailto)
+
+Invalid TTL (User Mistakes & Edge Cases):
+  - Validate_WithNonAllowedTtl_ShouldFail
+  - Validate_WithNegativeTtl_ShouldFail
+  - Validate_WithVeryLargeTtl_ShouldFail
+
+Anonymous User Restrictions:
+  - Validate_AnonymousUserWith15MinTtl_ShouldPass
+  - Validate_AnonymousUserWithNon15MinTtl_ShouldFail
+  - Validate_AuthenticatedUserWith60MinTtl_ShouldPass
+
+Security - Malicious URL Inputs:
+  - Validate_WithJavascriptProtocol_ShouldFail
+  - Validate_WithXssInQueryParams_ShouldStillPassValidation (documents behavior)
+  - Validate_WithLocalNetworkUrls_ShouldPass (documents SSRF consideration)
+  - Validate_WithSqlInjectionInUrl_ShouldStillBeValidUrl
+
+Edge Cases - URL Formats:
+  - Validate_WithUrlContainingPort_ShouldPass
+  - Validate_WithUrlContainingQueryAndFragment_ShouldPass
+  - Validate_WithUrlContainingEncodedCharacters_ShouldPass
+  - Validate_WithVeryLongUrl_ShouldPass
+  - Validate_WithInternationalizedDomain_ShouldPass
+
+Multiple Validation Errors:
+  - Validate_WithMultipleErrors_ShouldReportAll
+
+
+================================================================================
+SECURITY TESTS
+================================================================================
+
+SecurityTests.cs (Security/SecurityTests.cs)
+---------------------------------------------
+SQL Injection Prevention:
+  - ShortCode_WithSqlInjectionAttempts_ShouldRejectInvalidCharacters (7 payloads)
+
+XSS Prevention:
+  - ShortCode_WithXssAttempts_ShouldRejectInvalidCharacters (8 payloads)
+
+Path Traversal Prevention:
+  - ShortCode_WithPathTraversalAttempts_ShouldReject (6 payloads)
+
+Command Injection Prevention:
+  - ShortCode_WithCommandInjectionAttempts_ShouldReject (7 payloads)
+
+LDAP Injection Prevention:
+  - ShortCode_WithLdapInjectionAttempts_ShouldReject (3 payloads)
+
+XML/XXE Injection Prevention:
+  - ShortCode_WithXmlInjectionAttempts_ShouldReject (3 payloads)
+
+Template Injection Prevention:
+  - ShortCode_WithTemplateInjectionAttempts_ShouldReject (6 payloads)
+
+Null Byte Injection Prevention:
+  - ShortCode_WithNullByteInjection_ShouldReject (3 payloads)
+
+HTTP Response Splitting Prevention:
+  - ShortCode_WithHttpResponseSplitting_ShouldReject (3 payloads)
+
+Unicode/Encoding Attacks:
+  - ShortCode_WithUnicodeExploits_ShouldReject (5 payloads)
+  - ShortCode_WithHomographAttacks_ShouldReject (2 payloads)
+
+Buffer Overflow Prevention:
+  - ShortCode_WithExtremelyLongInput_ShouldReject
+  - ShortenedUrl_WithExtremelyLongUrl_ShouldAccept
+
+DoS Prevention - Resource Exhaustion:
+  - ShortCode_MultipleRapidCreations_ShouldNotExhaustResources
+
+IDOR Prevention Tests:
+  - ShortenedUrl_IdShouldBeUnpredictable
+
+Open Redirect Prevention (Documentation):
+  - ShortenedUrl_WithPotentialOpenRedirectUrls_DocumentsBehavior (4 scenarios)
+
+Data Integrity - Immutability:
+  - ShortCode_ValueShouldBeImmutable
+  - ShortenedUrl_StatusTransitionsShouldBeControlled
+
+
+================================================================================
+INFRASTRUCTURE TESTS (Placeholder)
+================================================================================
+
+Reserved folder for future tests:
+  - ShortenedUrlRepositoryTests.cs
+  - ShortCodeGeneratorTests.cs
+  - ShorteningDbContextTests.cs
+
+
+================================================================================
+TEST CATEGORIES SUMMARY
+================================================================================
+
+By Category:
+  - Domain Logic Tests:          ~45 tests
+  - Command Handler Tests:       ~20 tests
+  - Query Handler Tests:         ~30 tests
+  - Validator Tests:             ~25 tests
+  - Security Tests:              ~65 tests
+  - Edge Case Tests:             ~30 tests
+
+By Concern:
+  - Happy Path:                  ~40 tests
+  - Edge Cases:                  ~50 tests
+  - Error Handling:              ~30 tests
+  - Security/Malicious Input:    ~70 tests
+  - User Mistakes:               ~25 tests
+
+================================================================================
