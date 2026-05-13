@@ -1,0 +1,16 @@
+# Folders
+**/bin/
+**/obj/
+**/tests/
+.vs/
+.vscode/
+.git/
+# Files
+Dockerfile*
+.dockerignore
+*.user
+*.suo
+*.log
+UrlShortener.slnx
+# Configuration
+appsettings.Development.json
