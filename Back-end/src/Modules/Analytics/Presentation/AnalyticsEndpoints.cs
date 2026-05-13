@@ -25,6 +25,15 @@ public static class AnalyticsEndpoints
         .RequireAuthorization()
         .WithName("GetClicksByShortCode");
 
+        // GET /api/analytics/{code}/stats — Aggregated stats for a short code
+        group.MapGet("/{code}/stats", async (string code, IMediator mediator) =>
+        {
+            var result = await mediator.Send(new Analytics.Application.Queries.GetUrlStats.GetUrlStatsQuery(code));
+            return result is not null ? Results.Ok(result) : Results.NotFound();
+        })
+        .RequireAuthorization()
+        .WithName("GetUrlStats");
+
         // GET /api/analytics/clicks-in-period?from=...&to=... — Total clicks in date range
         group.MapGet("/clicks-in-period", async (DateTime from, DateTime to, ClaimsPrincipal user, IMediator mediator) =>
         {

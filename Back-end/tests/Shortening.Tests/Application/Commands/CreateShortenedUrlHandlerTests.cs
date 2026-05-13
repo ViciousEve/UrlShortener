@@ -1,6 +1,8 @@
 using FluentAssertions;
+using Microsoft.Extensions.Options;
 using Moq;
 using Shortening.Application.Commands.CreateShortenedUrl;
+using Shortening.Application.Configuration;
 using Shortening.Application.Contracts;
 using Shortening.Domain;
 
@@ -10,15 +12,19 @@ public class CreateShortenedUrlHandlerTests
 {
     private readonly Mock<IShortenedUrlRepository> _repositoryMock;
     private readonly Mock<IShortCodeGenerator> _shortCodeGeneratorMock;
+    private readonly Mock<IOptions<AppUrlSettings>> _appUrlSettingsMock;
     private readonly CreateShortenedUrlHandler _handler;
 
     public CreateShortenedUrlHandlerTests()
     {
         _repositoryMock = new Mock<IShortenedUrlRepository>();
         _shortCodeGeneratorMock = new Mock<IShortCodeGenerator>();
+        _appUrlSettingsMock = new Mock<IOptions<AppUrlSettings>>();
+        _appUrlSettingsMock.Setup(s => s.Value).Returns(new AppUrlSettings { AppUrl = "https://localhost" });
         _handler = new CreateShortenedUrlHandler(
             _repositoryMock.Object,
-            _shortCodeGeneratorMock.Object);
+            _shortCodeGeneratorMock.Object,
+            _appUrlSettingsMock.Object);
     }
 
     #region Successful Creation

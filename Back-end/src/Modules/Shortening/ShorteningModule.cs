@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Shortening.Application.Contracts;
 using Shortening.Infrastructure.Persistence;
 using Shortening.Infrastructure.Services;
+using Shortening.Application.Configuration;
 
 namespace Shortening
 {
@@ -19,6 +20,9 @@ namespace Shortening
 
             //Caching
             services.AddMemoryCache();
+
+            //Configuration
+            services.Configure<AppUrlSettings>(configuration);
 
             //Register application services
             services.AddScoped<ShortenedUrlRepository>();

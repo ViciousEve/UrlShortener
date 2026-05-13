@@ -31,6 +31,10 @@ namespace Shortening.Infrastructure.Persistence
             }
         }
 
+        public async Task DisableAsync(string shortCode) {
+        }
+
+
         public async Task SaveChangesAsync()
         {
             await _context.SaveChangesAsync();
