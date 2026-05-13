@@ -27,12 +27,6 @@ A full-stack URL shortening platform built with a modular, production-ready arch
 - **Recharts** — Analytics data visualization
 - **Vite** — Fast development tooling with environment variable support
 
-### Infrastructure
-- **Docker** — Multi-stage builds (Node.js → Nginx for frontend, containerized backend)
-- **GitHub Actions** — CI/CD pipeline running tests on every pull request
-- **Render** — Backend container hosting
-- **Vercel** — Frontend hosting
-- **Supabase** — Managed PostgreSQL database
 
 ## Project Structure
 
@@ -81,5 +75,3 @@ docker-compose -f docker-compose-dev.yml up --build
 ## Links
 
 - **GitHub:** [github.com/ViciousEve/UrlShortener](https://github.com/ViciousEve/UrlShortener)
-- **Live Frontend:** Deployed on Vercel
-- **Backend API:** Deployed on Render
