@@ -1,4 +1,4 @@
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion } from 'framer-motion'
 import { X, Download } from 'lucide-react'
 import { QRCodeSVG } from 'qrcode.react'
 import { Button } from './Button'
