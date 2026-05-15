@@ -9,10 +9,12 @@ import { Badge } from '../components/ui/Badge'
 import { useCreateUrl } from '../hooks/useCreateUrl'
 import { useToast } from '../components/layout/ToastProvider'
 import { useAuth } from '../context/AuthContext'
+import { QRCodeModal } from '../components/ui/QRCodeModal'
 
 export function LandingPage() {
   const [url, setUrl] = useState('')
   const [copied, setCopied] = useState(false)
+  const [showQrUrl, setShowQrUrl] = useState<string | null>(null)
   const { mutate: createUrl, data: result, isPending, reset } = useCreateUrl()
   const { success, error } = useToast()
   const { isAuthenticated } = useAuth()
@@ -131,6 +133,15 @@ export function LandingPage() {
                         {copied ? <Check size={14} /> : <Copy size={14} />}
                         {copied ? 'Copied!' : 'Copy'}
                       </button>
+                      <button
+                        id="qr-link-btn"
+                        type="button"
+                        onClick={() => setShowQrUrl(`https://${result.shortUrl}`)}
+                        className="p-1.5 rounded-lg glass glass-hover text-[var(--color-text-muted)] hover:text-white transition-colors"
+                        title="Show QR Code"
+                      >
+                        <QrCode size={14} />
+                      </button>
                       <a
                         href={`https://${result.shortUrl}`}
                         target="_blank"
@@ -198,6 +209,12 @@ export function LandingPage() {
       <footer className="page-content text-center py-6 text-xs text-[var(--color-text-muted)] border-t border-white/5">
         © 2025 Shortly. Built with ❤️ for speed.
       </footer>
+
+      <AnimatePresence>
+        {showQrUrl && (
+          <QRCodeModal url={showQrUrl} onClose={() => setShowQrUrl(null)} />
+        )}
+      </AnimatePresence>
     </div>
   )
 }
