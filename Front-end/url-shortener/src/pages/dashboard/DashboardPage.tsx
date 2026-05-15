@@ -11,6 +11,7 @@ import { Input } from '../../components/ui/Input'
 import { Card } from '../../components/ui/Card'
 import { Badge } from '../../components/ui/Badge'
 import { SkeletonRow } from '../../components/ui/SkeletonLoaders'
+import { QRCodeModal } from '../../components/ui/QRCodeModal'
 import { useUrls, type ShortenedUrl } from '../../hooks/useUrls'
 import { useCreateUrl } from '../../hooks/useCreateUrl'
 import { useUserStats } from '../../hooks/useUserStats'
@@ -162,6 +163,7 @@ function NewLinkModal({ onClose }: { onClose: () => void }) {
 // ── Main Dashboard ─────────────────────────────────
 export function DashboardPage() {
   const [showModal, setShowModal] = useState(false)
+  const [showQrUrl, setShowQrUrl] = useState<string | null>(null)
   const [copiedCode, setCopiedCode] = useState<string | null>(null)
   const [searchParams] = useSearchParams()
   const navigate = useNavigate()
@@ -297,8 +299,9 @@ export function DashboardPage() {
                           </button>
                           <button
                             id={`qr-${url.code}`}
+                            onClick={() => setShowQrUrl(url.shortUrl.startsWith('http') ? url.shortUrl : `https://${url.shortUrl}`)}
                             className="p-1.5 rounded-lg hover:bg-white/8 text-[var(--color-text-muted)] hover:text-white transition-colors"
-                            title="Download QR (coming soon)"
+                            title="Show QR Code"
                           >
                             <QrCode size={14} />
                           </button>
@@ -325,6 +328,9 @@ export function DashboardPage() {
       <AnimatePresence>
         {(showModal || isNew) && (
           <NewLinkModal onClose={() => { setShowModal(false); navigate('/dashboard') }} />
+        )}
+        {showQrUrl && (
+          <QRCodeModal url={showQrUrl} onClose={() => setShowQrUrl(null)} />
         )}
       </AnimatePresence>
     </div>
