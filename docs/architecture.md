@@ -210,13 +210,13 @@ Each module exposes a single extension method that registers all its services:
 
 ```csharp
 // Program.cs (Composition Root)
-builder.Services.AddShorteningModule(builder.Configuration);  // ✅ Wired
-builder.Services.AddAnalyticsModule(builder.Configuration);   // ✅ Wired
-// builder.Services.AddIdentityModule(builder.Configuration); // 🔜 Not yet wired
+builder.Services.AddShorteningModule(builder.Configuration); 
+builder.Services.AddAnalyticsModule(builder.Configuration);
+builder.Services.AddIdentityModule(builder.Configuration);
 
-app.MapShorteningModule();                                    // ✅ Endpoints mapped
-// app.MapAnalyticsModule();                                  // 🔜 No endpoints yet
-// app.MapIdentityModule();                                   // 🔜 Not yet wired
+app.MapShorteningModule();
+app.MapAnalyticsModule();
+app.MapIdentityModule();
 ```
 
 Each `Add*Module()` method registers:
